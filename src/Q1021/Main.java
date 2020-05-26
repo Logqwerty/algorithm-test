@@ -15,6 +15,22 @@ public class Main {
         return Integer.parseInt(str);
     }
 
+    static void rightShift(ArrayDeque<Integer> deque, int moved) {
+        while(moved-- > 0) {
+            int tail = deque.removeLast();
+            deque.addFirst(tail);
+        }
+        deque.removeFirst();
+    }
+
+    static void leftShift(ArrayDeque<Integer> deque, int moved) {
+        while(moved-- > 0) {
+            int head = deque.removeFirst();
+            deque.addLast(head);
+        }
+        deque.removeFirst();
+    }
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = getBufferedReader();
         StringTokenizer stk = new StringTokenizer(br.readLine());
@@ -36,40 +52,23 @@ public class Main {
                 continue;
             }
 
-            int left = 0;
-            ArrayDeque<Integer> leftShift = new ArrayDeque<>(position);
-            for(int j = 0; j < leftShift.size(); ++j) {
-                int head = leftShift.poll();
-                leftShift.add(head);
-                left++;
-
-                head = leftShift.peek();
-                if(wanted == head) {
-                    leftShift.poll();
-                    break;
-                }
+            // 왼쪽을 이동할 지, 오른쪽으로 이동할 지 선택할 수 있지 않을까?
+            // Deque 상의 wanted 위치를 찾아서 거리를 계산하고, 더 짧은 방향으로 움직이면 될 것 같다.
+            int wantedIndex = 0;
+            for(int pos : position) {
+                if(pos == wanted) break;
+                wantedIndex++;
             }
 
-            int right = 0;
-            ArrayDeque<Integer> rightShift = new ArrayDeque<>(position);
-            for(int j = 0; j < rightShift.size(); ++j) {
-                int tail = rightShift.removeLast();
-                rightShift.addFirst(tail);
-                right++;
+            int leftDistance = wantedIndex;
+            int rightDistance = position.size() - wantedIndex;
 
-                int head = rightShift.peek();
-                if(wanted == head) {
-                    rightShift.poll();
-                    break;
-                }
-            }
-
-            if(left > right) {
-                position = rightShift;
-                result += right;
+            if(leftDistance > rightDistance) {
+                result += rightDistance;
+                rightShift(position, rightDistance);
             } else {
-                position = leftShift;
-                result += left;
+                result += leftDistance;
+                leftShift(position, leftDistance);
             }
         }
 
