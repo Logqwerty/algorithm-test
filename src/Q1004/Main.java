@@ -3,9 +3,6 @@ package Q1004;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -42,51 +39,29 @@ public class Main {
         return Integer.parseInt(str);
     }
 
-    // 이 함수가 문제였네... 사각형 안에 포함되는지 판단하는 함수 로직이었어...
     static boolean isContained(Pos pos, Circle circle) {
-        return (pos.x - circle.x) * (pos.x - circle.x)
-                + (pos.y - circle.y) * (pos.y - circle.y) <= circle.r * circle.r;
+        int x = (pos.x - circle.x);
+        int y = (pos.y - circle.y);
+        int r = circle.r;
+        return x * x + y * y <= r * r;
     }
 
     static int solution(Pos start, Pos end, Circle[] circles) {
-        boolean[] contained = new boolean[circles.length];
+        // 다 풀고 보니 결국 우리가 원하는 경우는 단 두 가지 조건에 해당하는 원들이다.
+        // 1. start만 포함하고 end는 포함하지 않는 경우 => 최소 이탈 횟수
+        // 2. end만 포함하고 start는 포함하지 않는 경우 => 최소 진입 횟수
+        // 위 두 가지를 만족하는 원의 갯수가 결국 원하는 값이다.
 
-        // 1. 출발점을 포함하는 원들의 리스트를 구하고 정렬하자.
-        // 그리고 boolean[]로 어떤 원인지 체크해두자.
-        List<Circle> startInCircles = new ArrayList<>();
-        for(int i = 0; i < circles.length; ++i) {
-            if(isContained(start, circles[i])) {
-                startInCircles.add(circles[i]);
-                contained[i] = true;
-            }
+        int count = 0;
+        for(Circle circle : circles) {
+            boolean isStartContained = isContained(start, circle);
+            boolean isEndContained = isContained(end, circle);
+            // 1. start만 포함하는 경우
+            if(!isEndContained && isStartContained) count++;
+            // 2. end만 포함하는 경우
+            if(isEndContained && !isStartContained) count++;
         }
-        Collections.sort(startInCircles);
-
-        // 2. 도착점을 포함하는 원들의 리스트를 구하자.
-        // 공유하는 원 중에 가장 반지름이 짧은 원을 생각하지 않았네...
-        Circle outermost = null;
-        List<Circle> endInCircles = new ArrayList<>();
-        for(int i = 0; i < circles.length; ++i) {
-            if(!isContained(end, circles[i])) continue;
-            if(contained[i]) {
-                if(outermost == null) outermost = circles[i];
-                else if(outermost.r > circles[i].r) outermost = circles[i];
-            }
-            endInCircles.add(circles[i]);
-        }
-        Collections.sort(endInCircles);
-
-        // 2-1. 공유하는 원이 존재한다면(그런 원들이 여러 개 있다면, r이 가장 짧은 경우),
-        // 각각 해당 원 직전까지 진입/이탈 횟수를 계산하면 된다.
-        if(outermost != null) {
-            int out = startInCircles.indexOf(outermost);
-            int in = endInCircles.indexOf(outermost);
-            return out + in;
-        }
-
-        // 2-2. 그런 경우가 없다면, 각 점을 포함하는 최외곽 원이 서로 동 떨어져 있는 경우이다.
-        // startInCircles.length + endInCircles.length
-        return startInCircles.size() + endInCircles.size();
+        return count;
     }
 
     public static void main(String[] args) throws IOException {
