@@ -2,3 +2,4 @@
 out/
 src/Base.java
 src/**/*.txt
+src/**/Test.*
