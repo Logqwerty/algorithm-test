@@ -12,3 +12,4 @@
 | [피보나치함수](https://www.acmicpc.net/problem/1003) | [Java](https://github.com/Logqwerty/algorithm-test/tree/master/src/Q1003) |
 | [어린왕자](https://www.acmicpc.net/problem/1004) | [Java](https://github.com/Logqwerty/algorithm-test/tree/master/src/Q1004) |
 | [수열의합](https://www.acmicpc.net/problem/1024) | [Java](https://github.com/Logqwerty/algorithm-test/tree/master/src/Q1024) |
+| [램프](https://www.acmicpc.net/problem/1034) | [Java](https://github.com/Logqwerty/algorithm-test/tree/master/src/Q1034) |
